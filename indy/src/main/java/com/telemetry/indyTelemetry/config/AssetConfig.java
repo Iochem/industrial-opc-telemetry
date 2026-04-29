@@ -7,8 +7,8 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public class AssentConfig {
-    private String assentName;
+public class AssetConfig {
+    private String assetName;
     private String area;
     private String endpoint;
     private final String operationalStatus;
