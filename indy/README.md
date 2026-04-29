@@ -1,37 +1,37 @@
-# Industrial OPC Telemetry #
+# Industrial OPC Telemetry
 
 **Status**: In development
 
 ## Functionalities
 
-- OPC UA client connection using Eclipse Milo.
-- Real-time data collection from industrial devices.
-- Subscription-based telemetry monitoring.
-- operational state (on/off) tracking.
-- Structured telemetry processing.
-- Modular configuration for multiple assets.
+- OPC UA client connection using Eclipse Milo
+- Real-time data collection from industrial devices
+- Subscription-based telemetry monitoring (no polling-only)
+- Operational state (on/off) tracking
+- Automatic reconnection handling
+- Structured event logging
+- Modular configuration for multiple assets
 
-##  Notes
+**Architecture**: OPC UA Server --> OPC Client --> Telemetry Subscriber --> Real-time Processing
 
-- All endpoints and NodeIds in this project are simulated.
-  - Example: opc.tcp://localhost:4840
-  kd=99;s=Demo/On
-- No real industrial data is exposed.
-- The focus is on architecture, OPC UA integration and real-time processing.
+## Notes
 
+- All endpoints and NodeIds in this project are simulated  
+  Example: opc.tcp://localhost:4840  
+  ns=2;s=Demo/On
+- No real industrial data is exposed
+- Focus on OPC UA integration and real-time processing architecture
 
-##  Technologies
+## Technologies
+
 - Java 17
 - Spring Boot
-- JPA / Hibernate
 - OPC UA (Eclipse Milo)
 - PostgreSQL / TimescaleDB (planned)
 - Lombok
 
 
 ## How to use
-
-
 
 ```bash
 ## 1. Clone the repository
