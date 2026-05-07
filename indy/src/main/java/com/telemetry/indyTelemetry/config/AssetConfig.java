@@ -9,7 +9,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class AssetConfig {
     private String assetName;
-    private String area;
+    private Area area;
     private String endpoint;
     private final String operationalStatus;
     private Map<String, String> generalTelemetry;
