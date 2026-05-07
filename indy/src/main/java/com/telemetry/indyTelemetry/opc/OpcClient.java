@@ -15,7 +15,7 @@ public class OpcClient { // Handles operational state polling and telemetry subs
 
     private final AssetConfig config;
     private OpcUaClient client;
-    //private OpcTelemetrySubscriber subscriber;
+    private OpcTelemetrySubscriber subscriber;
     //private volatile boolean sessionActive = false;
     private static final Logger log = LoggerFactory.getLogger(OpcClient.class);
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -31,24 +31,12 @@ public class OpcClient { // Handles operational state polling and telemetry subs
             client = client.create(config.getEndpoint()); // create
             client.connect().get(15, TimeUnit.SECONDS);
 
-            startStatusMonitor();
-            startMonitorSubscription();
+            subscriber = new OpcTelemetrySubscriber(config, client);
+            subscriber.start();
 
         } catch (Exception e) {
             log.error("OPC UA session unavailable for asset: {} | {}", config.getAssetName(), e.getMessage(), e);
         }
-    }
-
-
-    private void startStatusMonitor(){
-        log.info("Hearbet started for: {} ", config.getAssetName());
-
-
-    }
-
-    private void startMonitorSubscription(){
-        log.info("Subscription started for: {} ", config.getAssetName());
-
     }
 
 }
