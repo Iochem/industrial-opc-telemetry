@@ -1,6 +1,6 @@
 package com.telemetry.indyTelemetry.opc;
 
-import com.telemetry.indyTelemetry.config.AssetConfig;
+import com.telemetry.indyTelemetry.config.AssetModel;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class OpcClient { // Handles operational state polling and telemetry subscriptions
 
-    private final AssetConfig config;
+    private final AssetModel config;
     private OpcUaClient client;
     private OpcTelemetrySubscriber subscriber;
     //private volatile boolean sessionActive = false;
