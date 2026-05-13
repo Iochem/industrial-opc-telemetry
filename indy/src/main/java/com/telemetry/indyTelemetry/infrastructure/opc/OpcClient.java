@@ -1,6 +1,6 @@
-package com.telemetry.indyTelemetry.opc;
+package com.telemetry.indyTelemetry.infrastructure.opc;
 
-import com.telemetry.indyTelemetry.config.AssetModel;
+import com.telemetry.indyTelemetry.domain.AssetModel;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.slf4j.Logger;

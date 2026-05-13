@@ -1,4 +1,4 @@
-package com.telemetry.indyTelemetry.opc;
+package com.telemetry.indyTelemetry.infrastructure.opc;
 
 
 import com.telemetry.indyTelemetry.config.AssetConfigFactory;
