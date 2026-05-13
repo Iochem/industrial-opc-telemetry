@@ -28,10 +28,10 @@ public class OpcClient { // Handles operational state polling and telemetry subs
     private synchronized void ensureSession() {
 
         try{
-            client = client.create(config.getEndpoint()); // create
+            client = client.create(config.getEndpoint()); //  (session → OPC Connection) To Create OPC client, create and active session
             client.connect().get(15, TimeUnit.SECONDS);
 
-            subscriber = new OpcTelemetrySubscriber(config, client);
+            subscriber = new OpcTelemetrySubscriber(config, client); // Send
             subscriber.start();
 
         } catch (Exception e) {
