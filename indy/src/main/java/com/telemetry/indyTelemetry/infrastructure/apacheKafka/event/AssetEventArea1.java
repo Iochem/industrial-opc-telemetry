@@ -11,12 +11,13 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AssetEvent {
+public class AssetEventArea1 {
     // fixed camps — All asset have
     private String assetName;
     private Area area;
     private Instant timestamp;
-    private  String operationalStatus;
+    private String operationalStatus;
+    //private String connectionStatus;
 
     // Optional camps — Only some asset have
     private Map<String, String> generalTelemetryEvent;
