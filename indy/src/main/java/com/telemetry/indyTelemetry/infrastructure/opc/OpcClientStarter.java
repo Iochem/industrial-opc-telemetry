@@ -1,7 +1,7 @@
 package com.telemetry.indyTelemetry.infrastructure.opc;
 
 
-import com.telemetry.indyTelemetry.config.AssetConfigFactory;
+
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OpcClientStarter { //To start the client OPC
 
-    private final AssetConfigFactory machineConfigFactory;
+    private final com.telemetry.indyTelemetry.infrastructure.configTags.AssetConfigFactory machineConfigFactory;
 
     @PostConstruct
     public void start(){
-        machineConfigFactory.createAssents().forEach( assent -> {
+        machineConfigFactory.createAssets().forEach( assent -> {
             new OpcClient(assent).start();
         });
 
