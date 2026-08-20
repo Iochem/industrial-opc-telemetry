@@ -11,7 +11,8 @@ public class AssetModel {
     private String assetName;
     private Area area;
     private String endpoint;
-    private final String operationalStatus;
+    private final Boolean operationalStatus;
+    private String operationalTagStatus;
     private Map<String, String> generalTelemetry;
 }
 
