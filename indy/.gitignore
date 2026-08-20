@@ -38,4 +38,4 @@ application.properties
 indy/src/main/resources/application.properties
 
 indy/src/main/java/com/telemetry/indyTelemetry/infrastructure/configTags/PlantCity1.java
-src/main/java/com/telemetry/indyTelemetry/infrastructure/configTags/PlantCity1.java
+AssetProducer.java
