@@ -16,9 +16,11 @@ public class AssetEventArea1 {
     private String assetName;
     private Area area;
     private Instant timestamp;
-    private String operationalStatus;
+    private Boolean operationalStatus;
     //private String connectionStatus;
-
-    // Optional camps — Only some asset have
-    private Map<String, String> generalTelemetryEvent;
+    private Float tag01;
+    private Float tag02;
+    private Float tag03;
+    private Float tag04;
+    private Float tag05;
 }
