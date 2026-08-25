@@ -26,6 +26,7 @@ import java.util.concurrent.*;
 public class OpcTelemetrySubscriber {
     private final AssetModel config;
     private final OpcUaClient client;
+    private final AssetProducer producer;
 
     private UaSubscription subscription;
     private ScheduledFuture<?> statusMonitorFuture;
@@ -36,6 +37,7 @@ public class OpcTelemetrySubscriber {
     private static final double TELEMETRY_INTERVAL_MS = 600.0;
     private static final int TELEMETRY_QUEUE_SIZE = 15;
     private static final int STATE_INTERVAL = 5;
+
 
 
     public void start() throws Exception {
@@ -66,6 +68,8 @@ public class OpcTelemetrySubscriber {
                         config.getAssetName(),
                         operationalStatus
                 );
+
+                producer.createEventArea1(config.getAssetName(), operationalStatus);
 
             } catch (Exception e) {
                 log.warn("Status monitor failed for asset={}", config.getAssetName());
@@ -146,6 +150,7 @@ public class OpcTelemetrySubscriber {
                         log.info("event=telemetry_update asset={} signal={} value={}", config.getAssetName(), telemetry.getValue(), raw
                         );
 
+                        producer.accumulatEventArea1(config.getAssetName(), config.getArea(),raw, tagName);
                     })
             ).get();
         }
