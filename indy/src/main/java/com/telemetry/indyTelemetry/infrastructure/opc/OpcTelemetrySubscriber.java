@@ -1,6 +1,7 @@
 package com.telemetry.indyTelemetry.infrastructure.opc;
 
 import com.telemetry.indyTelemetry.domain.AssetModel;
+import com.telemetry.indyTelemetry.infrastructure.apacheKafka.service.AssetProducer;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
@@ -59,11 +60,11 @@ public class OpcTelemetrySubscriber {
                         statusNode
                 ).get(3, TimeUnit.SECONDS);
 
-                boolean operational = Boolean.TRUE.equals(value.getValue().getValue());
+                boolean operationalStatus = Boolean.TRUE.equals(value.getValue().getValue());
 
                 log.info("event=asset_state asset={} operational={}",
                         config.getAssetName(),
-                        operational
+                        operationalStatus
                 );
 
             } catch (Exception e) {
@@ -89,7 +90,9 @@ public class OpcTelemetrySubscriber {
 
         for (Map.Entry<String, String> telemetry : config.getGeneralTelemetry().entrySet()) {
 
+            String operationalTag = telemetry.getValue();
             NodeId nodeId = NodeId.parse(telemetry.getKey());
+
 
             // === Define what will be to monitored ===
             ReadValueId readValueId = new ReadValueId(
@@ -126,12 +129,26 @@ public class OpcTelemetrySubscriber {
 
                         Object raw = value.getValue().getValue();
 
+                        String tagName = operationalTag;
+                        Integer index = null;
+
+                        if(tagName.contains("|")){
+                            String[] parts = tagName.split("\\|");
+                            tagName = parts[0];
+                            index = Integer.parseInt(parts[1]);
+                        }
+
+                        if (index != null && raw != null && raw.getClass().isArray()) {
+                            raw = java.lang.reflect.Array.get(raw, index);
+                        }
+
+
                         log.info("event=telemetry_update asset={} signal={} value={}", config.getAssetName(), telemetry.getValue(), raw
                         );
+
                     })
             ).get();
         }
 
     }
-
 }
