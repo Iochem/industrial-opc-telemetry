@@ -1,6 +1,7 @@
 package com.telemetry.indyTelemetry.infrastructure.opc;
 
 import com.telemetry.indyTelemetry.domain.AssetModel;
+import com.telemetry.indyTelemetry.infrastructure.apacheKafka.service.AssetProducer;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.slf4j.Logger;
@@ -16,9 +17,11 @@ public class OpcClient { // Handles operational state polling and telemetry subs
     private final AssetModel config;
     private OpcUaClient client;
     private OpcTelemetrySubscriber subscriber;
-    //private volatile boolean sessionActive = false;
+    private volatile boolean sessionActive = false;
     private static final Logger log = LoggerFactory.getLogger(OpcClient.class);
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    private final AssetProducer producer;
 
 
     public void start() {
@@ -27,17 +30,27 @@ public class OpcClient { // Handles operational state polling and telemetry subs
 
     private synchronized void ensureSession() {
 
-        try{
-            client = client.create(config.getEndpoint()); //  (session → OPC Connection) To Create OPC client, create and active session
+        if (sessionActive && client != null && subscriber != null && subscriber.isActive()) {
+            return;
+        }
+
+        try {
+            client = OpcUaClient.create(config.getEndpoint());
             client.connect().get(15, TimeUnit.SECONDS);
 
-            subscriber = new OpcTelemetrySubscriber(config, client); // Send
+            subscriber = new OpcTelemetrySubscriber(config, client, producer);
+
             subscriber.start();
+            sessionActive = true;
+
+            log.info("OPC UA connected asset={}", config.getAssetName());
 
         } catch (Exception e) {
-            log.error("OPC UA session unavailable for asset: {} | {}", config.getAssetName(), e.getMessage(), e);
+            sessionActive = false;
+
+            log.error("OPC UA session unavailable for asset={} | {}", config.getAssetName(), e.getMessage(), e);
         }
     }
-
 }
+
 

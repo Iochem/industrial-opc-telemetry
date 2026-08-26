@@ -38,19 +38,25 @@ public class OpcTelemetrySubscriber {
     private static final int TELEMETRY_QUEUE_SIZE = 15;
     private static final int STATE_INTERVAL = 5;
 
+    private volatile boolean active = true;
+
 
 
     public void start() throws Exception {
+        active = true;
         startStatusMonitor();
         startMonitorSubscription();
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     /**
      * Starts periodic OPC UA polling for the asset
-     *
      */
     private void startStatusMonitor(){
-        log.info("Hearbet started for: {} ", config.getAssetName());
+        //log.info("Hearbet started for: {} ", config.getAssetName());
 
         NodeId statusNode = NodeId.parse(config.getOperationalStatus());
 
@@ -64,14 +70,15 @@ public class OpcTelemetrySubscriber {
 
                 boolean operationalStatus = Boolean.TRUE.equals(value.getValue().getValue());
 
-                log.info("event=asset_state asset={} operational={}",
-                        config.getAssetName(),
-                        operationalStatus
-                );
+//                log.info("event=asset_state asset={} operational={}",
+//                        config.getAssetName(),
+//                        operationalStatus
+//                );
 
                 producer.createEventArea1(config.getAssetName(), operationalStatus);
 
             } catch (Exception e) {
+                active = false;
                 log.warn("Status monitor failed for asset={}", config.getAssetName());
             }
 
@@ -147,8 +154,7 @@ public class OpcTelemetrySubscriber {
                         }
 
 
-                        log.info("event=telemetry_update asset={} signal={} value={}", config.getAssetName(), telemetry.getValue(), raw
-                        );
+                        log.info("event=telemetry_update asset={} signal={} value={}", config.getAssetName(), telemetry.getValue(), raw);
 
                         producer.accumulatEventArea1(config.getAssetName(), config.getArea(),raw, tagName);
                     })
@@ -156,4 +162,5 @@ public class OpcTelemetrySubscriber {
         }
 
     }
+
 }
