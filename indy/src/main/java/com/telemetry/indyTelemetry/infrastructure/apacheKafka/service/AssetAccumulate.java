@@ -1,5 +1,6 @@
 package com.telemetry.indyTelemetry.infrastructure.apacheKafka.service;
 
+import com.telemetry.indyTelemetry.application.opc.MessageStatusOpc;
 import com.telemetry.indyTelemetry.domain.Area;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AssetAccumulate {
 
-    public void area1Accumulate(String assetName, Map<String, Object> state, Area area, Object raw,  String tagName){
+    private final MessageStatusOpc messageStatusOpc;
 
+    public void area1Accumulate(String assetName, Map<String, Object> state, Area area, Object raw,  String tagName, int statusOpc){
+
+        //log.info("asset={} | area={} | tag1={} | value={}", assetName, area, tagName, raw);
         if(area != null ) state.put("area", area);
 
         if(tagName.contains("_tag01")) {
@@ -33,5 +37,15 @@ public class AssetAccumulate {
             if(raw instanceof Number number) state.put("tag05", number.floatValue());
         }
 
+        // ===== OPC CONNECTION STATUS =====
+        String previousStatus = (String) state.get("connectionStatus");
+
+        String newStatus = messageStatusOpc.createMessageStatusOpc(statusOpc);
+
+        if (!newStatus.equals(previousStatus)) {
+            state.put("connectionStatus", newStatus);
+        }
+
+        //log.info("asset={} | area={} | tag1={} | value={}", assetName, area, tagName, raw);
     }
 }
