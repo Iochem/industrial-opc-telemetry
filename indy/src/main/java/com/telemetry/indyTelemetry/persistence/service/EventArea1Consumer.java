@@ -39,4 +39,21 @@ public class EventArea1Consumer {
             log.error("Error processing event", e);
         }
     }
+
+    private boolean isDatabaseError(Exception e){
+        Throwable current = e;
+
+        while(current != null){
+            if (current instanceof org.springframework.dao.DataAccessException
+                    || current instanceof java.sql.SQLException
+                    || current instanceof jakarta.persistence.PersistenceException
+                    || current instanceof org.hibernate.exception.JDBCConnectionException) {
+                return true;
+            }
+            current = current.getCause();
+
+        }
+        return false;
+    }
+
 }
