@@ -17,7 +17,9 @@ public class AssetEventArea1 {
     private Area area;
     private Instant timestamp;
     private Boolean operationalStatus;
-    //private String connectionStatus;
+
+    private String connectionStatus;
+
     private Float tag01;
     private Float tag02;
     private Float tag03;

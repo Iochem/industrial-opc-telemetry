@@ -23,6 +23,7 @@ public class OpcClient { // Handles operational state polling and telemetry subs
 
     private final AssetProducer producer;
 
+    private int statusOpc = 0;
 
     public void start() {
         scheduler.scheduleWithFixedDelay(this::ensureSession, 0, 10, TimeUnit.SECONDS);
@@ -39,14 +40,18 @@ public class OpcClient { // Handles operational state polling and telemetry subs
             client.connect().get(15, TimeUnit.SECONDS);
 
             subscriber = new OpcTelemetrySubscriber(config, client, producer);
-
+            subscriber.statusOpcValidate(statusOpc);
             subscriber.start();
             sessionActive = true;
-
-            log.info("OPC UA connected asset={}", config.getAssetName());
+            statusOpc = 0;
+           log.info("OPC UA connected asset={}", config.getAssetName());
 
         } catch (Exception e) {
             sessionActive = false;
+            statusOpc = 1;
+            subscriber.statusOpcValidate(statusOpc);
+            producer.accumulatEventArea1(config.getAssetName(), config.getArea(), null, "", statusOpc);
+            producer.createEventArea1(config.getAssetName(), false);
 
             log.error("OPC UA session unavailable for asset={} | {}", config.getAssetName(), e.getMessage(), e);
         }
