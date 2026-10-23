@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public class MessageStatusOpc {
     public String createMessageStatusOpc(int status0) {
         if (status0 == 0) return "Stable connection";
-        else return "connection failure";
+        else return "Connection failure";
     }
 }
