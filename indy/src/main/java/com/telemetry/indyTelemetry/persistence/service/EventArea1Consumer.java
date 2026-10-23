@@ -33,6 +33,7 @@ public class EventArea1Consumer {
             entity.setTag3(event.getTag03());
             entity.setTag4(event.getTag04());
             entity.setTag5(event.getTag05());
+            entity.setConnectionStatus(event.getConnectionStatus());
             repository.saveAndFlush(entity);
 
         } catch (Exception e) {
