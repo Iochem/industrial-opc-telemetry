@@ -37,5 +37,6 @@ public class EventArea1Entity {
     private Float tag4;
     private Float tag5;
 
-
+    @Column(name = "connection_status")
+    private String connectionStatus;
 }
