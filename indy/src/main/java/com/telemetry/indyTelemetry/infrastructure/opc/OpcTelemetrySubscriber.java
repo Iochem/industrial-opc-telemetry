@@ -39,8 +39,11 @@ public class OpcTelemetrySubscriber {
     private static final int STATE_INTERVAL = 5;
 
     private volatile boolean active = true;
+    private int statusOpc;
 
-
+    public void statusOpcValidate(int statusO) {
+        this.statusOpc = statusO;
+    }
 
     public void start() throws Exception {
         active = true;
@@ -57,9 +60,7 @@ public class OpcTelemetrySubscriber {
      */
     private void startStatusMonitor(){
         //log.info("Hearbet started for: {} ", config.getAssetName());
-
         NodeId statusNode = NodeId.parse(config.getOperationalStatus());
-
         statusMonitorFuture = scheduler.scheduleWithFixedDelay(() -> {
             try {
                 DataValue value = client.readValue(
@@ -70,18 +71,14 @@ public class OpcTelemetrySubscriber {
 
                 boolean operationalStatus = Boolean.TRUE.equals(value.getValue().getValue());
 
-//                log.info("event=asset_state asset={} operational={}",
-//                        config.getAssetName(),
-//                        operationalStatus
-//                );
-
+                //log.info("event=asset_state asset={} operational={}", config.getAssetName(), operationalStatus);
                 producer.createEventArea1(config.getAssetName(), operationalStatus);
 
             } catch (Exception e) {
                 active = false;
+                producer.createEventArea1(config.getAssetName(), false);
                 log.warn("Status monitor failed for asset={}", config.getAssetName());
             }
-
         }, 0, STATE_INTERVAL, TimeUnit.SECONDS);
 
     }
@@ -103,7 +100,6 @@ public class OpcTelemetrySubscriber {
 
             String operationalTag = telemetry.getValue();
             NodeId nodeId = NodeId.parse(telemetry.getKey());
-
 
             // === Define what will be to monitored ===
             ReadValueId readValueId = new ReadValueId(
@@ -152,15 +148,10 @@ public class OpcTelemetrySubscriber {
                         if (index != null && raw != null && raw.getClass().isArray()) {
                             raw = java.lang.reflect.Array.get(raw, index);
                         }
-
-
-                        log.info("event=telemetry_update asset={} signal={} value={}", config.getAssetName(), telemetry.getValue(), raw);
-
-                        producer.accumulatEventArea1(config.getAssetName(), config.getArea(),raw, tagName);
+                        //log.info("event=telemetry_update asset={} signal={} value={}", config.getAssetName(), telemetry.getValue(), raw);
+                        producer.accumulatEventArea1(config.getAssetName(), config.getArea(),raw, tagName, statusOpc);
                     })
             ).get();
         }
-
     }
-
 }
